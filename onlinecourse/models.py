@@ -114,6 +114,33 @@ class Enrollment(models.Model):
     #        return True
     #    else:
     #        return False
+class Question(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    question_text = models.CharField(max_length=255)
+    grade = models.FloatField()
+    is_multiple_choice = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_get_score(self, selected_ids):
+        all_answers = self.choice_set.filter(is_correct=True).count()
+        selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+        if all_answers == selected_correct:
+            return True
+        else:
+            return False
+
+    def not_select(self, selected_ids):
+        all_answers = self.choice_set.filter(is_correct=False).count()
+        selected_incorrect = self.choice_set.filter(is_correct=False, id__in=selected_ids).count()
+        if all_answers == selected_incorrect:
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        return self.question_text
+
 
 
 #  <HINT> Create a Choice Model with:
@@ -123,6 +150,24 @@ class Enrollment(models.Model):
     # Indicate if this choice of the question is a correct one or not
     # Other fields and methods you would like to design
 # class Choice(models.Model):
+class Choice(models.Model): 
+
+    question = models.ForeignKey(Question, on_delete=models.CASCADE) 
+
+    choice_text = models.TextField() 
+
+    is_correct = models.BooleanField() 
+
+    created_at = models.DateTimeField(auto_now_add=True) 
+
+    updated_at = models.DateTimeField(auto_now=True) 
+
+ 
+ 
+
+    def __str__(self): 
+
+        return self.choice_text 
 
 # <HINT> The submission model
 # One enrollment could have multiple submission
@@ -132,3 +177,14 @@ class Enrollment(models.Model):
 #    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
 #    choices = models.ManyToManyField(Choice)
 #    Other fields and methods you would like to design
+class Submission(models.Model): 
+
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE) 
+
+    choices = models.ManyToManyField(Choice) 
+
+    timestamp = models.DateTimeField(auto_now_add=True) 
+
+    score = models.FloatField(default=0.0) 
+
+    graded = models.BooleanField(default=False) 
