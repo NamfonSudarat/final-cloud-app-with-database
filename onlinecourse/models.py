@@ -153,13 +153,9 @@ class Question(models.Model):
 class Choice(models.Model): 
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE) 
-
     choice_text = models.TextField() 
-
     is_correct = models.BooleanField() 
-
     created_at = models.DateTimeField(auto_now_add=True) 
-
     updated_at = models.DateTimeField(auto_now=True) 
 
  
@@ -178,9 +174,9 @@ class Choice(models.Model):
 #    choices = models.ManyToManyField(Choice)
 #    Other fields and methods you would like to design
 class Submission(models.Model): 
+    pass
 
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE) 
-
     choices = models.ManyToManyField(Choice) 
 
     timestamp = models.DateTimeField(auto_now_add=True) 
